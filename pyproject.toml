@@ -1,0 +1,26 @@
+[project]
+name = "devtrack"
+version = "0.1.0"
+description = "A developer task tracking and AI-powered Git commit CLI tool"
+authors = [
+    { name = "Raymond Degbe", email = "mrdegbe14@gmail.com" }
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "requests",
+    "python-dotenv",
+    "openai"
+]
+
+[project.scripts]
+devtrack = "devtrack.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["devtrack"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
