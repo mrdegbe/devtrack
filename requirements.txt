@@ -2,3 +2,5 @@ typer
 openai
 python-dotenv
 requests
+pytest
+typer[all]
