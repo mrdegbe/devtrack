@@ -1,6 +1,6 @@
 # devtrack/utils.py
 
-import subprocess, requests, logging
+import os, subprocess, requests, logging
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -8,7 +8,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Logging setup
-logging.basicConfig(filename='devtrack.log', level=logging.ERROR)
+# logging.basicConfig(filename='devtrack.log', level=logging.ERROR)
+log_path = os.path.join(os.path.expanduser("~"), "devtrack.log")
+logging.basicConfig(filename=log_path, level=logging.ERROR)
 
 CONFIG_PATH = Path.home() / ".devtrackrc"
 
@@ -92,33 +94,3 @@ def query_ollama(prompt: str, model: str) -> str:
     except Exception as e:
         logging.error(f"Ollama Error: {e}")
         raise RuntimeError(f"Ollama Error: {e}")
-
-
-# import subprocess, os
-#
-# def get_git_diff():
-#     try:
-#         result = subprocess.run(
-#             ['git', 'diff', '--staged'],
-#             capture_output=True,
-#             text=True,
-#             encoding="utf-8",
-#             errors="ignore"
-#         )
-#         return result.stdout.strip()
-#     except subprocess.CalledProcessError as e:
-#         print(f"[!] Git diff error: {e}")
-#         return ""
-#
-# def sanitize_output(text: str) -> str:
-#     return text.encode("utf-8", errors="ignore").decode("utf-8", errors="ignore")
-#
-# def load_config():
-#     openai_api_key = os.getenv("OPENAI_API_KEY")
-#     ollama_model = os.getenv("OLLAMA_MODEL", "llama3")  # Default to llama3 if not specified
-#     if not openai_api_key:
-#         raise ValueError("[!] OpenAI API key not found. Please set the OPENAI_API_KEY in the .env file.")
-#     return {
-#         "openai_api_key": openai_api_key,
-#         "ollama_model": ollama_model
-#     }

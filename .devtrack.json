@@ -1,6 +1,54 @@
 [
   {
-    "id": 1,
-    "description": "Brand new test command"
+    "id": 2,
+    "description": "Publish devtrack to PyPI"
+  },
+  {
+    "id": 3,
+    "description": "Add automatic detection + error hints for missing ollama"
+  },
+  {
+    "id": 4,
+    "description": "Learn more about the setup.py file"
+  },
+  {
+    "id": 5,
+    "description": "Include edit task to devtrack commands"
+  },
+  {
+    "id": 6,
+    "description": "Do unit testing for devtrack cli"
+  },
+  {
+    "id": 7,
+    "description": "Learn how to use devtrack globally"
+  },
+  {
+    "id": 8,
+    "description": "Update README.md to suit the current setup"
+  },
+  {
+    "id": 9,
+    "description": "Discuss and learn about where to save .devtrack.json and .devtrackrc files for global usage"
+  },
+  {
+    "id": 10,
+    "description": "Setup .env.example"
+  },
+  {
+    "id": 11,
+    "description": "Discuss and learn packaging with setup.py and/or pyproject.toml"
+  },
+  {
+    "id": 12,
+    "description": "Handle aliases (eg., rm for remove)"
+  },
+  {
+    "id": 13,
+    "description": "Suppport --version or configuration overrides via CLI flags"
+  },
+  {
+    "id": 14,
+    "description": "update devtrack readme file"
   }
 ]
