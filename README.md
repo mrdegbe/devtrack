@@ -14,7 +14,7 @@
 ## 🏷️ Badges
 
 ![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)
-![License](https://img.shields.io/github/license/mrdegbe/devtrack)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Stars](https://img.shields.io/github/stars/mrdegbe/devtrack?style=social)
 ![Last Commit](https://img.shields.io/github/last-commit/mrdegbe/devtrack)
 

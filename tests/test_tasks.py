@@ -1,120 +1,112 @@
-import os
-import tempfile
-import pytest
-from devtrack import tasks as task_module
+from devtrack.tasks import (
+    load_tasks,
+    save_tasks,
+    add_task,
+    list_tasks,
+    remove_task,
+    get_task_description,
+    TASKS_FILE
+)
+from pathlib import Path
+from unittest.mock import mock_open, patch, call
+import json
 
-@pytest.fixture
-def temp_task_file():
-    with tempfile.NamedTemporaryFile(delete=False) as tmp:
-        yield tmp.name
-    os.remove(tmp.name)
-
-@pytest.fixture
-def mock_tasks():
-    return [
-        {"id": 1, "description": "First task"},
-        {"id": 2, "description": "Second task"},
-    ]
-
-def test_add_task(monkeypatch, temp_task_file):
-    monkeypatch.setattr(task_module, "TASKS_FILE", temp_task_file)
-    monkeypatch.setattr(task_module, "load_tasks", lambda: [])
-    added = []
-
-    def mock_save(tasks, file):
-        added.extend(tasks)
-
-    monkeypatch.setattr(task_module, "save_tasks", mock_save)
-    task_module.add_task("Write test cases")
-
-    assert len(added) == 1
-    assert added[0]["description"] == "Write test cases"
-    assert added[0]["id"] == 1
-
-def test_remove_task(monkeypatch, temp_task_file, mock_tasks):
-    monkeypatch.setattr(task_module, "TASKS_FILE", temp_task_file)
-    monkeypatch.setattr(task_module, "load_tasks", lambda: mock_tasks)
-    removed = []
-
-    def mock_save(tasks, file):
-        removed.extend(tasks)
-
-    monkeypatch.setattr(task_module, "save_tasks", mock_save)
-    task_module.remove_task(1)
-
-    assert len(removed) == 1
-    assert removed[0]["id"] == 2
-
-def test_list_tasks(monkeypatch, capsys, mock_tasks):
-    monkeypatch.setattr(task_module, "load_tasks", lambda: mock_tasks)
-    task_module.list_tasks()
-    out = capsys.readouterr().out
-    assert "1. First task" in out
-    assert "2. Second task" in out
+@patch.object(Path, "exists", return_value=False)
+def test_load_tasks_file_not_exists(mock_exists):
+    assert load_tasks() == []
 
 
-# import unittest
-# from unittest.mock import mock_open, patch
-# import json
-# from devtrack import tasks
-#
-# mock_tasks_data = [
-#     {"id": 1, "description": "Initial task"},
-#     {"id": 2, "description": "Second task"}
-# ]
-#
-# class TestTasks(unittest.TestCase):
-#
-#     @patch("builtins.open", new_callable=mock_open, read_data=json.dumps(mock_tasks_data))
-#     def test_list_tasks(self, mock_file):
-#         with patch("builtins.print") as mock_print:
-#             tasks.list_tasks()
-#             mock_print.assert_any_call("✅ 1: Initial task")
-#             mock_print.assert_any_call("✅ 2: Second task")
-#
-#     @patch("builtins.open", new_callable=mock_open)
-#     @patch("os.path.exists", return_value=True)
-#     def test_add_task(self, mock_exists, mock_file):
-#         with patch("json.load", return_value=mock_tasks_data.copy()), \
-#              patch("json.dump") as mock_dump:
-#             tasks.add_task("New task")
-#             mock_dump.assert_called_once()
-#             dumped_tasks = mock_dump.call_args[0][0]
-#             self.assertEqual(dumped_tasks[-1]["description"], "New task")
-#             self.assertEqual(dumped_tasks[-1]["id"], 3)
-#
-#     @patch("builtins.open", new_callable=mock_open)
-#     @patch("os.path.exists", return_value=True)
-#     def test_remove_task_valid_id(self, mock_exists, mock_file):
-#         with patch("json.load", return_value=mock_tasks_data.copy()), \
-#              patch("json.dump") as mock_dump, \
-#              patch("builtins.print") as mock_print:
-#             tasks.remove_task(1)
-#             mock_dump.assert_called_once()
-#             updated_tasks = mock_dump.call_args[0][0]
-#             self.assertEqual(len(updated_tasks), 1)
-#             self.assertEqual(updated_tasks[0]["id"], 2)
-#             mock_print.assert_any_call("🗑️ Task 1 removed.")
-#
-#     @patch("builtins.open", new_callable=mock_open)
-#     @patch("os.path.exists", return_value=True)
-#     def test_remove_task_invalid_id(self, mock_exists, mock_file):
-#         with patch("json.load", return_value=mock_tasks_data.copy()), \
-#              patch("builtins.print") as mock_print:
-#             tasks.remove_task(99)
-#             mock_print.assert_any_call("[!] Task ID 99 not found.")
-#
-#     @patch("builtins.open", new_callable=mock_open, read_data=json.dumps(mock_tasks_data))
-#     @patch("os.path.exists", return_value=True)
-#     def test_get_task_by_id_found(self, mock_exists, mock_file):
-#         task = tasks.get_task_by_id(2)
-#         self.assertEqual(task, "Second task")
-#
-#     @patch("builtins.open", new_callable=mock_open, read_data=json.dumps(mock_tasks_data))
-#     @patch("os.path.exists", return_value=True)
-#     def test_get_task_by_id_not_found(self, mock_exists, mock_file):
-#         task = tasks.get_task_by_id(99)
-#         self.assertIsNone(task)
-#
-# if __name__ == "__main__":
-#     unittest.main()
+@patch.object(Path, "exists", return_value=True)
+@patch("builtins.open", new_callable=mock_open, read_data='[{"id": 1, "description": "Test"}]')
+def test_load_tasks_valid(mock_open_file, mock_exists):
+    tasks = load_tasks()
+    assert tasks == [{"id": 1, "description": "Test"}]
+
+
+@patch.object(Path, "exists", return_value=True)
+@patch("builtins.open", new_callable=mock_open, read_data='{ bad json }')
+def test_load_tasks_invalid_json(mock_open_file, mock_exists, capsys):
+    tasks = load_tasks()
+    captured = capsys.readouterr()
+    assert tasks == []
+    assert "corrupted" in captured.out
+
+
+@patch("builtins.open", new_callable=mock_open)
+def test_save_tasks(mock_open_file):
+    tasks = [{"id": 1, "description": "Test task"}]
+
+    # Call the function
+    save_tasks(tasks)
+
+    # ✅ Match the actual TASKS_FILE object (Path)
+    mock_open_file.assert_called_once_with(TASKS_FILE, "w", encoding="utf-8")
+
+    handle = mock_open_file()
+    written = ''.join(call.args[0] for call in handle.write.call_args_list)
+
+    expected = json.dumps(tasks, indent=2)
+    assert written == expected
+
+
+@patch("devtrack.tasks.save_tasks")
+@patch("devtrack.tasks.load_tasks", return_value=[])
+def test_add_task(mock_load, mock_save, capsys):
+    add_task("New Task")
+    mock_save.assert_called_once()
+    captured = capsys.readouterr()
+    assert "Task added" in captured.out
+
+
+@patch("devtrack.tasks.load_tasks", return_value=[])
+def test_list_tasks_empty(mock_load_tasks, capsys):
+    list_tasks()
+    captured = capsys.readouterr()
+    assert "No tasks" in captured.out
+
+
+@patch("devtrack.tasks.load_tasks", return_value=[
+    {"id": 1, "description": "Do A"},
+    {"id": 2, "description": "Do B"}
+])
+def test_list_tasks_multiple(mock_load_tasks, capsys):
+    list_tasks()
+    captured = capsys.readouterr()
+    assert "Do A" in captured.out
+    assert "Do B" in captured.out
+
+
+@patch("devtrack.tasks.save_tasks")
+@patch("devtrack.tasks.load_tasks", return_value=[
+    {"id": 1, "description": "Keep"}, {"id": 2, "description": "Delete"}
+])
+def test_remove_task_found(mock_load, mock_save, capsys):
+    remove_task(2)
+    mock_save.assert_called_once()
+    captured = capsys.readouterr()
+    assert "removed" in captured.out
+
+
+@patch("devtrack.tasks.save_tasks")
+@patch("devtrack.tasks.load_tasks", return_value=[
+    {"id": 1, "description": "Only Task"}
+])
+def test_remove_task_not_found(mock_load, mock_save, capsys):
+    remove_task(5)
+    mock_save.assert_not_called()
+    captured = capsys.readouterr()
+    assert "not found" in captured.out
+
+
+@patch("devtrack.tasks.load_tasks", return_value=[
+    {"id": 1, "description": "Fix bug"},
+    {"id": 2, "description": "Add feature"},
+])
+def test_get_task_description_found(mock_load):
+    desc = get_task_description(2)
+    assert desc == "Add feature"
+
+
+@patch("devtrack.tasks.load_tasks", return_value=[])
+def test_get_task_description_not_found(mock_load):
+    assert get_task_description(99) is None
