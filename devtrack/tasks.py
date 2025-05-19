@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-TASKS_FILE = Path(".devtrack.json")
+TASKS_FILE = Path.home() / ".devtrack.json"
 
 def load_tasks():
     if not TASKS_FILE.exists():

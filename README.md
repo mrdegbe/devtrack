@@ -22,7 +22,7 @@
 
 # 🚀 DevTrack CLI
 
-> 🛠️ DevTrack is a lightweight developer productivity CLI tool for tracking tasks and generating meaningful Git commit messages (AI-powered) without leaving the terminal. It works both online (via OpenAI) and offline (via Ollama).
+> 🛠️ DevTrack is a lightweight developer productivity CLI tool for tracking tasks and generating meaningful Git commit messages (AI-powered) without leaving the terminal. It works both online (via OpenRouter) and offline (via Ollama).
 
 ---
 
@@ -47,7 +47,7 @@ Modern developers juggle dozens of tasks daily — but Git alone doesn’t track
 
 - ✅ Add, list, and remove tasks
 - 🧠 Generate smart commit messages based on task description and git diff
-- 🌐 Supports OpenAI and Ollama for online/offline usage
+- 🌐 Supports OpenRouter and Ollama for online/offline usage
 - 📁 Stores tasks locally in `.devtrack.json`
 - 🖥️ Runs from the terminal as `devtrack <command>`
 

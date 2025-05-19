@@ -49,7 +49,7 @@ def load_config() -> dict:
 def query_openai(prompt: str, api_key: str) -> str:
     try:
         response = requests.post(
-            "https://api.openai.com/v1/chat/completions",
+            "https://openai.com/api/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json"
@@ -94,3 +94,32 @@ def query_ollama(prompt: str, model: str) -> str:
     except Exception as e:
         logging.error(f"Ollama Error: {e}")
         raise RuntimeError(f"Ollama Error: {e}")
+
+
+def query_openrouter(prompt: str, api_key: str, model: str) -> str:
+    try:
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": model,
+                "messages": [
+                    {"role": "system", "content": "Generate a short, clear Git commit message in present tense (max 12 words)."},
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.3
+            },
+            timeout=15
+        )
+        data = response.json()
+
+        if "choices" not in data:
+            raise RuntimeError(f"Unexpected OpenRouter response: {data}")
+
+        return data["choices"][0]["message"]["content"].strip()
+    except Exception as e:
+        logging.error(f"OpenRouter Error: {e}")
+        raise RuntimeError(f"OpenRouter Error: {e}")
