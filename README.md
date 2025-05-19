@@ -53,55 +53,85 @@ Modern developers juggle dozens of tasks daily — but Git alone doesn’t track
 
 ---
 
-## 🔧 Installation
+## 🚀 Installation
 
-### Clone and install locally (editable mode)
+Install globally from PyPI:
 
 ```bash
-git clone https://github.com/mrdegbe/devtrack.git
-cd devtrack
-pip install -e .
-````
+pip install devtrack
+```
+
 ---
-## 📌 Usage
+
+## 🧰 Usage
+
+### ✅ Initialize DevTrack in a Project
+
+```bash
+devtrack init
+```
+
+This sets up `~/.devtrack.json` for task tracking and walks you through configuring an AI provider for commit message generation.
+
+You'll be asked to choose a provider:
+
+* `openai` → Requires your OpenAI API key.
+* `ollama` → Requires a local model name (e.g., `codellama` or `llama3`).
+* `openrouter` → Requires your OpenRouter API key and model name (e.g., `openrouter/openchat`).
+
+Your settings are saved in `~/.devtrackrc`.
+
+---
 
 ### ➕ Add a Task
 
 ```bash
-devtrack add "Write unit tests"
+devtrack add "Refactor user authentication flow"
 ```
 
-
-
-### 📋 List Tasks
+### 📋 View All Tasks
 
 ```bash
 devtrack tasks
 ```
 
-
-### 🗑️ Remove a task
+### ❌ Remove a Task
 
 ```bash
 devtrack remove <task_id>
 ```
 
-### 📦 Commit with Task
+
+
+### 💬 Generate a Commit Message (AI-Powered)
+
+First, stage your changes with `git add`.
+
+Then run:
 
 ```bash
 devtrack commit <task_id>
 ```
-Commits with AI-generated commit message.
-Git must be initialized and have clean staging for this to work.
 
-### 📊 View Summary
+DevTrack uses your configured AI provider to generate a short, clean Git commit message based on the task description and current Git diff.
+
+---
+
+## 🌐 AI Provider Configuration
+
+To update your AI settings, simply run:
 
 ```bash
-devtrack summary
+devtrack init
 ```
 
-Shows completed task stats.
+Or edit the `~/.devtrackrc` file directly:
 
+```ini
+provider=openrouter
+openrouter_api_key=your_api_key
+openrouter_model=openrouter/openchat
+```
 ---
 
 ## 🧠 How It Works
@@ -149,13 +179,7 @@ devtrack/
 
 ## 🌱 Roadmap & Features
 
-* [x] Add/complete/list tasks
-* [x] Git commit integration
-* [ ] Task filtering by tag
-* [ ] Task priority levels
-* [ ] GitHub issue linking
-* [ ] Daily journal export
-* [ ] Zsh/Bash shell completion
+See [devtrack\_roadmap.md](./devtrack_roadmap.md) for upcoming features and development phases.
 
 ---
 

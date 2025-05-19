@@ -1,6 +1,7 @@
 import sys
 from devtrack.commits import generate_commit
 from devtrack.tasks import list_tasks, add_task, remove_task
+from devtrack.project import init_project
 
 def print_help():
     print("""
@@ -51,6 +52,10 @@ def main():
             remove_task(task_id)
         except ValueError:
             print("[!] Task ID must be an integer.")
+
+    elif command == "init":
+        init_project()
+
 
     elif command == "help":
         print_help()
