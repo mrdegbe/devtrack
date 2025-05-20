@@ -8,6 +8,7 @@ def print_help():
 Usage: devtrack <command> [options]
 
 Available commands:
+  init                 Configure DevTrack and set up your AI provider (runs once).
   commit <task_id>     Generate a Git commit message for the given task ID.
   tasks                List all tasks.
   add <description>    Add a new task with the provided description.

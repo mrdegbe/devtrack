@@ -1,6 +1,6 @@
 [project]
 name = "devtrack"
-version = "0.1.0"
+version = "0.1.1"
 description = "Developer task tracking and smart AI commit CLI tool"
 readme = "README.md"
 requires-python = ">=3.7"

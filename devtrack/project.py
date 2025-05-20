@@ -8,6 +8,8 @@ CONFIG_RC = Path.home() / ".devtrackrc"
 def init_project():
     if os.path.exists(CONFIG_FILE):
         print("✅  DevTrack is already initialized in this project.")
+        return
+
     else:
         default_data = {
             "tasks": []
@@ -17,7 +19,7 @@ def init_project():
             with open(CONFIG_FILE, "w") as f:
                 json.dump(default_data, f, indent=2)
 
-            print("📁 Created `devtrack.json` to track your tasks.")
+            print("📁 Created `.devtrack.json` to track your tasks.")
         except Exception as e:
             print(f"[!] Failed to create project task file: {e}")
             return
