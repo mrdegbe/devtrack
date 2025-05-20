@@ -11,9 +11,7 @@ def init_project():
         return
 
     else:
-        default_data = {
-            "tasks": []
-        }
+        default_data = {"tasks": []}
 
         try:
             with open(CONFIG_FILE, "w") as f:
@@ -26,11 +24,13 @@ def init_project():
 
     print("\n🛠️ Let's configure your AI provider for commit message generation.")
 
-    provider = input("Choose your preferred AI provider [openai / ollama / openrouter]: ").strip().lower()
+    provider = (
+        input("Choose your preferred AI provider [openai / ollama / openrouter]: ")
+        .strip()
+        .lower()
+    )
 
-    config = {
-        "provider": provider
-    }
+    config = {"provider": provider}
 
     if provider == "openai":
         api_key = input("🔑 Enter your OpenAI API key: ").strip()
@@ -40,7 +40,9 @@ def init_project():
         config["ollama_model"] = model
     elif provider == "openrouter":
         api_key = input("🔑 Enter your OpenRouter API key: ").strip()
-        model = input("🤖 Enter your OpenRouter model (e.g., openrouter/openchat): ").strip()
+        model = input(
+            "🤖 Enter your OpenRouter model (e.g., openrouter/openchat): "
+        ).strip()
         config["openrouter_api_key"] = api_key
         config["openrouter_model"] = model
     else:

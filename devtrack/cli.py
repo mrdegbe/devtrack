@@ -3,8 +3,10 @@ from devtrack.commits import generate_commit
 from devtrack.tasks import list_tasks, add_task, remove_task
 from devtrack.project import init_project
 
+
 def print_help():
-    print("""
+    print(
+        """
 Usage: devtrack <command> [options]
 
 Available commands:
@@ -14,7 +16,8 @@ Available commands:
   add <description>    Add a new task with the provided description.
   remove <task_id>     Remove a task by its ID.
   help                 Show this help message.
-""")
+"""
+    )
 
 
 def main():
@@ -56,7 +59,6 @@ def main():
 
     elif command == "init":
         init_project()
-
 
     elif command == "help":
         print_help()

@@ -7,9 +7,10 @@ from devtrack.utils import (
     query_openai,
     query_ollama,
     load_config,
-    query_openrouter
+    query_openrouter,
 )
 from devtrack.tasks import load_tasks
+
 
 def generate_commit(task_id: int):
     tasks = load_tasks()
@@ -40,7 +41,9 @@ def generate_commit(task_id: int):
         elif provider == "openrouter":
             print("🌐 Using OpenRouter...")
             try:
-                commit_message = query_openrouter(prompt, config["openrouter_api_key"], config["openrouter_model"])
+                commit_message = query_openrouter(
+                    prompt, config["openrouter_api_key"], config["openrouter_model"]
+                )
             except Exception as e:
                 print(f"[!] Openrouter failed: {e}")
                 print("⚠️ Falling back to Ollama...")
@@ -67,15 +70,17 @@ def generate_commit(task_id: int):
         prefixes = [
             "Here is a short, clear Git commit message in the present tense",
             "Commit message",
-            "Suggested commit message"
+            "Suggested commit message",
         ]
         for prefix in prefixes:
             if clean_commit_message.lower().startswith(prefix.lower()):
-                clean_commit_message = clean_commit_message[len(prefix):].strip(": \n\"")
+                clean_commit_message = clean_commit_message[len(prefix) :].strip(
+                    ': \n"'
+                )
 
         clean_commit_message = clean_commit_message.strip()
 
-        subprocess.run(['git', 'commit', '-m', clean_commit_message], check=True)
+        subprocess.run(["git", "commit", "-m", clean_commit_message], check=True)
         print("✅ Commit created: " + clean_commit_message)
 
     except Exception as e:

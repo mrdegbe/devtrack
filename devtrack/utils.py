@@ -27,7 +27,7 @@ def get_git_diff() -> str:
             text=True,
             encoding="utf-8",
             errors="ignore",
-            check=True
+            check=True,
         )
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
@@ -52,17 +52,20 @@ def query_openai(prompt: str, api_key: str) -> str:
             "https://openai.com/api/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             json={
                 "model": "gpt-3.5-turbo",
                 "messages": [
-                    {"role": "system", "content": "Generate a short, clear Git commit message in present tense (max 12 words)."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "Generate a short, clear Git commit message in present tense (max 12 words).",
+                    },
+                    {"role": "user", "content": prompt},
                 ],
-                "temperature": 0.3
+                "temperature": 0.3,
             },
-            timeout=15
+            timeout=15,
         )
         data = response.json()
 
@@ -85,7 +88,7 @@ def query_ollama(prompt: str, model: str) -> str:
             text=True,
             encoding="utf-8",
             errors="ignore",
-            timeout=60
+            timeout=60,
         )
         if result.returncode != 0:
             raise RuntimeError(result.stderr.strip())
@@ -102,17 +105,20 @@ def query_openrouter(prompt: str, api_key: str, model: str) -> str:
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             json={
                 "model": model,
                 "messages": [
-                    {"role": "system", "content": "Generate a short, clear Git commit message in present tense (max 12 words)."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "Generate a short, clear Git commit message in present tense (max 12 words).",
+                    },
+                    {"role": "user", "content": prompt},
                 ],
-                "temperature": 0.3
+                "temperature": 0.3,
             },
-            timeout=15
+            timeout=15,
         )
         data = response.json()
 
