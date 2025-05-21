@@ -9,7 +9,8 @@ from devtrack.tasks import (
 )
 from pathlib import Path
 from unittest.mock import mock_open, patch, call
-import json
+import json, pytest
+from devtrack import tasks
 
 
 @patch.object(Path, "exists", return_value=False)
@@ -119,3 +120,48 @@ def test_get_task_description_found(mock_load):
 @patch("devtrack.tasks.load_tasks", return_value=[])
 def test_get_task_description_not_found(mock_load):
     assert get_task_description(99) is None
+
+MOCK_TASKS = [
+    {"id": 1, "description": "First Task", "completed": False},
+    {"id": 2, "description": "Second Task", "completed": False},
+]
+
+@pytest.fixture
+def mock_load_save():
+    with patch("devtrack.tasks.load_tasks", return_value=MOCK_TASKS.copy()), \
+         patch("devtrack.tasks.save_tasks") as mock_save:
+        yield mock_save
+
+
+def test_mark_task_done_success(mock_load_save, capsys):
+    tasks.mark_task_done(1)
+    captured = capsys.readouterr()
+    assert "marked as completed" in captured.out
+    mock_load_save.assert_called_once()
+    assert MOCK_TASKS[0]["completed"] is True
+
+
+def test_mark_task_done_not_found(mock_load_save, capsys):
+    tasks.mark_task_done(99)
+    captured = capsys.readouterr()
+    assert "not found" in captured.out
+
+
+def test_summary_tasks_output(capsys):
+    with patch("devtrack.tasks.load_tasks", return_value=[
+        {"id": 1, "description": "Done Task", "completed": True},
+        {"id": 2, "description": "Pending Task", "completed": False},
+    ]):
+        tasks.summary_tasks()
+        captured = capsys.readouterr()
+        assert "✅  Completed Tasks:" in captured.out
+        assert "[1] Done Task" in captured.out
+        assert "🕐 Pending Tasks:" in captured.out
+        assert "[2] Pending Task" in captured.out
+
+
+def test_summary_tasks_no_tasks(capsys):
+    with patch("devtrack.tasks.load_tasks", return_value=[]):
+        tasks.summary_tasks()
+        captured = capsys.readouterr()
+        assert "No tasks found" in captured.out

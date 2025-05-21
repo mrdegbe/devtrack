@@ -25,9 +25,10 @@ def save_tasks(tasks):
 def add_task(description):
     tasks = load_tasks()
     task_id = 1 if not tasks else tasks[-1]["id"] + 1
-    tasks.append({"id": task_id, "description": description})
+    completed = False
+    tasks.append({"id": task_id, "description": description, "completed": completed})
     save_tasks(tasks)
-    print(f"✅  Task added (ID {task_id}): {description}")
+    print(f"✅ Task added (ID {task_id}): {description}")
 
 
 def list_tasks():
@@ -54,3 +55,30 @@ def get_task_description(task_id):
     tasks = load_tasks()
     task = next((t for t in tasks if t["id"] == task_id), None)
     return task["description"] if task else None
+
+def mark_task_done(task_id: int):
+    tasks = load_tasks()
+    for task in tasks:
+        if task["id"] == task_id:
+            task["completed"] = True
+            save_tasks(tasks)
+            print(f"✅ Task [{task_id}] marked as completed.")
+            return
+    print(f"[!] Task with ID {task_id} not found.")
+
+def summary_tasks():
+    tasks = load_tasks()
+    if not tasks:
+        print("📝 No tasks found.")
+        return
+
+    completed = [t for t in tasks if t.get("completed", False)]
+    pending = [t for t in tasks if not t.get("completed", False)]
+
+    print("✅  Completed Tasks:")
+    for task in completed:
+        print(f"  [{task['id']}] {task['description']}")
+
+    print("\n🕐 Pending Tasks:")
+    for task in pending:
+        print(f"  [{task['id']}] {task['description']}")
