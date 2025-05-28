@@ -3,12 +3,18 @@ import tempfile, json
 from unittest import mock
 from devtrack.project import init_project
 
-@mock.patch("builtins.input", side_effect=["openai", "test-key"])  # Mock both provider + API key
+
+@mock.patch(
+    "builtins.input", side_effect=["openai", "test-key"]
+)  # Mock both provider + API key
 def test_init_project_creates_config_file(mock_input):
     with tempfile.TemporaryDirectory() as tmpdir:
         # Patch both the task config and the RC config paths
-        with mock.patch("devtrack.project.CONFIG_FILE", Path(tmpdir) / "devtrack.json"), \
-             mock.patch("devtrack.project.CONFIG_RC", Path(tmpdir) / ".devtrackrc"):  # 👈 PATCH THIS
+        with mock.patch(
+            "devtrack.project.CONFIG_FILE", Path(tmpdir) / "devtrack.json"
+        ), mock.patch(
+            "devtrack.project.CONFIG_RC", Path(tmpdir) / ".devtrackrc"
+        ):  # 👈 PATCH THIS
 
             init_project()
 
@@ -19,7 +25,9 @@ def test_init_project_creates_config_file(mock_input):
             with open(config_path, "r") as f:
                 data = json.load(f)
                 assert "tasks" in data, "Missing 'tasks' key"
-                assert data["tasks"] == [], "'tasks' should be initialized as an empty list"
+                assert (
+                    data["tasks"] == []
+                ), "'tasks' should be initialized as an empty list"
 
             # Validate .devtrackrc content
             rc_path = Path(tmpdir) / ".devtrackrc"

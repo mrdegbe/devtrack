@@ -2,6 +2,7 @@ from unittest.mock import patch, call
 from devtrack.commits import generate_commit
 import re
 
+
 @patch("devtrack.commits.load_tasks")
 @patch("devtrack.commits.get_git_diff")
 @patch("devtrack.commits.load_config")
@@ -41,9 +42,9 @@ def test_generate_commit_openai_success(
     actual_args = mock_run.call_args[0][0]  # e.g. ['git', 'commit', '-m', 'message']
     commit_msg = actual_args[3]
 
-    assert re.match(r"^(feat|chore|fix|refactor|docs|test|style|perf|ci)\([^)]+\):", commit_msg), \
-        f"Commit message '{commit_msg}' does not follow Conventional Commits format"
-
+    assert re.match(
+        r"^(feat|chore|fix|refactor|docs|test|style|perf|ci)\([^)]+\):", commit_msg
+    ), f"Commit message '{commit_msg}' does not follow Conventional Commits format"
 
 
 @patch("devtrack.commits.load_tasks")
@@ -92,8 +93,12 @@ def test_generate_commit_fallback_to_ollama(
         "openai_api_key": "bad-key",
         "ollama_model": "llama3",
     }
-    mock_ollama.return_value = "feat(core): optimized search feature"  # 👈 Add Conventional Commit format
-    mock_sanitize.return_value = "feat(core): optimized search feature"  # 👈 Add Conventional Commit format
+    mock_ollama.return_value = (
+        "feat(core): optimized search feature"  # 👈 Add Conventional Commit format
+    )
+    mock_sanitize.return_value = (
+        "feat(core): optimized search feature"  # 👈 Add Conventional Commit format
+    )
 
     # Run function
     generate_commit(1)
@@ -107,5 +112,6 @@ def test_generate_commit_fallback_to_ollama(
     commit_msg = actual_args[3]
 
     # ✅ Use regex to validate Conventional Commit format
-    assert re.match(r"^(feat|chore|fix|refactor|docs|test|style|perf|ci)\([^)]+\):", commit_msg), \
-        f"Commit message '{commit_msg}' does not follow Conventional Commits format"
+    assert re.match(
+        r"^(feat|chore|fix|refactor|docs|test|style|perf|ci)\([^)]+\):", commit_msg
+    ), f"Commit message '{commit_msg}' does not follow Conventional Commits format"

@@ -121,15 +121,18 @@ def test_get_task_description_found(mock_load):
 def test_get_task_description_not_found(mock_load):
     assert get_task_description(99) is None
 
+
 MOCK_TASKS = [
     {"id": 1, "description": "First Task", "completed": False},
     {"id": 2, "description": "Second Task", "completed": False},
 ]
 
+
 @pytest.fixture
 def mock_load_save():
-    with patch("devtrack.tasks.load_tasks", return_value=MOCK_TASKS.copy()), \
-         patch("devtrack.tasks.save_tasks") as mock_save:
+    with patch("devtrack.tasks.load_tasks", return_value=MOCK_TASKS.copy()), patch(
+        "devtrack.tasks.save_tasks"
+    ) as mock_save:
         yield mock_save
 
 
@@ -148,10 +151,13 @@ def test_mark_task_done_not_found(mock_load_save, capsys):
 
 
 def test_summary_tasks_output(capsys):
-    with patch("devtrack.tasks.load_tasks", return_value=[
-        {"id": 1, "description": "Done Task", "completed": True},
-        {"id": 2, "description": "Pending Task", "completed": False},
-    ]):
+    with patch(
+        "devtrack.tasks.load_tasks",
+        return_value=[
+            {"id": 1, "description": "Done Task", "completed": True},
+            {"id": 2, "description": "Pending Task", "completed": False},
+        ],
+    ):
         tasks.summary_tasks()
         captured = capsys.readouterr()
         assert "✅  Completed Tasks:" in captured.out

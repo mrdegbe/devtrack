@@ -6,14 +6,20 @@ from pathlib import Path
 CHANGELOG_PATH = Path("CHANGELOG.md")
 
 # Conventional commit pattern
-commit_re = re.compile(r"^(feat|fix|docs|style|refactor|perf|test|chore)(\((.*?)\))?:\s(.+)$")
+commit_re = re.compile(
+    r"^(feat|fix|docs|style|refactor|perf|test|chore)(\((.*?)\))?:\s(.+)$"
+)
+
 
 def get_commit_log():
     result = subprocess.run(
         ["git", "log", "--pretty=format:%s", "--no-merges"],
-        capture_output=True, text=True, check=True
+        capture_output=True,
+        text=True,
+        check=True,
     )
     return result.stdout.strip().split("\n")
+
 
 def parse_commits(commits):
     sections = {
@@ -24,17 +30,20 @@ def parse_commits(commits):
         "refactor": [],
         "perf": [],
         "test": [],
-        "chore": []
+        "chore": [],
     }
 
     for msg in commits:
         match = commit_re.match(msg)
         if match:
             type_, _, scope, description = match.groups()
-            formatted = f"- {description}" if not scope else f"- **{scope}**: {description}"
+            formatted = (
+                f"- {description}" if not scope else f"- **{scope}**: {description}"
+            )
             sections[type_].append(formatted)
 
     return sections
+
 
 def generate_changelog():
     commits = get_commit_log()
@@ -52,7 +61,7 @@ def generate_changelog():
                 "refactor": "🧹 Code Refactoring",
                 "perf": "⚡ Performance",
                 "test": "✅ Tests",
-                "chore": "🔧 Chores"
+                "chore": "🔧 Chores",
             }[section]
             lines.append(f"## {section_title}")
             lines.extend(messages)
@@ -60,6 +69,7 @@ def generate_changelog():
 
     CHANGELOG_PATH.write_text("\n".join(lines), encoding="utf-8")
     print("✅ CHANGELOG.md generated!")
+
 
 if __name__ == "__main__":
     generate_changelog()

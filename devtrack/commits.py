@@ -11,6 +11,7 @@ from devtrack.utils import (
 )
 from devtrack.tasks import load_tasks
 
+
 def generate_commit(task_id: int):
     tasks = load_tasks()
     task = next((t for t in tasks if t["id"] == task_id), None)
@@ -45,7 +46,9 @@ def generate_commit(task_id: int):
         elif provider == "openrouter":
             print("🌐 Using OpenRouter...")
             try:
-                commit_message = query_openrouter(prompt, config["openrouter_api_key"], config["openrouter_model"])
+                commit_message = query_openrouter(
+                    prompt, config["openrouter_api_key"], config["openrouter_model"]
+                )
             except Exception as e:
                 print(f"[!] Openrouter failed: {e}")
                 print("⚠️ Falling back to Ollama...")
@@ -62,7 +65,9 @@ def generate_commit(task_id: int):
         clean_commit_message = sanitize_output(commit_message)
 
         # 🔍 Ensure message follows Conventional Commit format
-        if not clean_commit_message.startswith(("feat", "fix", "chore", "docs", "refactor", "test", "style", "perf")):
+        if not clean_commit_message.startswith(
+            ("feat", "fix", "chore", "docs", "refactor", "test", "style", "perf")
+        ):
             clean_commit_message = f"chore(core): {clean_commit_message}"
         elif "(" not in clean_commit_message:
             # If missing scope, inject default "core"

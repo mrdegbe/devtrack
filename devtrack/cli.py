@@ -1,6 +1,12 @@
 import sys
 from devtrack.commits import generate_commit
-from devtrack.tasks import list_tasks, add_task, remove_task, summary_tasks, mark_task_done
+from devtrack.tasks import (
+    list_tasks,
+    add_task,
+    remove_task,
+    summary_tasks,
+    mark_task_done,
+)
 from devtrack.project import init_project
 
 

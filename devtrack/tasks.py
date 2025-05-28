@@ -56,6 +56,7 @@ def get_task_description(task_id):
     task = next((t for t in tasks if t["id"] == task_id), None)
     return task["description"] if task else None
 
+
 def mark_task_done(task_id: int):
     tasks = load_tasks()
     for task in tasks:
@@ -65,6 +66,7 @@ def mark_task_done(task_id: int):
             print(f"✅ Task [{task_id}] marked as completed.")
             return
     print(f"[!] Task with ID {task_id} not found.")
+
 
 def summary_tasks():
     tasks = load_tasks()
