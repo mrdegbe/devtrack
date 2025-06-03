@@ -5,10 +5,14 @@ from devtrack.utils import load_config
 def show_status():
     task_file = os.path.expanduser("~/.devtrack.json")
 
-    # Load latest task
+    # Load latest task safely
     if os.path.exists(task_file):
-        with open(task_file, "r") as f:
-            tasks = json.load(f)
+        try:
+            with open(task_file, "r") as f:
+                tasks = json.load(f)
+        except json.JSONDecodeError:
+            print("[!] Your task file is empty or corrupted. Resetting to empty list.")
+            tasks = []
         current_task = tasks[-1] if tasks else None
     else:
         current_task = None
