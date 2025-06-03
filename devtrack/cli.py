@@ -8,6 +8,7 @@ from devtrack.tasks import (
     mark_task_done,
 )
 from devtrack.project import init_project
+from devtrack.status import show_status
 
 
 def print_help():
@@ -18,6 +19,7 @@ Usage: devtrack <command> [options]
 Available commands:
   init                 Configure DevTrack and set up your AI provider (runs once).
   summary              List all tasks under Completed tasks and Pending tasks.
+  status               Show current task, staged Git changes, and AI status.
   done <task_id>       Mark task as done by its ID.
   commit <task_id>     Generate a Git commit message for the given task ID.
   tasks                List all tasks.
@@ -83,6 +85,9 @@ def main():
 
     elif command == "summary":
         summary_tasks()
+
+    elif command == "status":
+        show_status()
 
     else:
         print(f"[!] Unknown command: {command}")

@@ -92,6 +92,7 @@ Usage: devtrack <command> [options]
 Available commands:
   init                 Configure DevTrack and set up your AI provider (runs once).
   summary              List all tasks under Completed tasks and Pending tasks.
+  status               Show current task, staged Git changes, and AI status.
   done <task_id>       Mark task as done by its ID.
   commit <task_id>     Generate a Git commit message for the given task ID.
   tasks                List all tasks.
