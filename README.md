@@ -211,6 +211,19 @@ Thanks for considering contributing! 💡
 
 We welcome bug fixes, feature ideas, and even documentation improvements!
 
+<!-- ✅ NEW SECTION STARTS HERE -->
+
+### 🔍 Code Style and Pre-commit Hooks
+
+DevTrack uses [`pre-commit`](https://pre-commit.com/) with [`black`](https://github.com/psf/black) to automatically format Python code before every commit.
+
+To set this up locally (only if you're contributing to DevTrack):
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
 ---
 ## 🛡 .gitignore
 

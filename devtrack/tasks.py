@@ -6,11 +6,6 @@ from pathlib import Path
 TASKS_FILE = Path.home() / ".devtrack.json"
 
 
-# Temporary test for pre-commit hook
-def _precommit_test():
-    print("Pre-commit is working!")
-
-
 def load_tasks():
     if not TASKS_FILE.exists():
         return []
