@@ -41,10 +41,12 @@ def test_tasks(mock_print, mock_list_tasks):
 @mock.patch("devtrack.cli.add_task")
 @mock.patch("builtins.print")
 def test_add_valid_description(mock_print, mock_add_task):
-    test_args = ["devtrack", "add", "Finish", "docs"]
+    # Updated to match new CLI usage with tag
+    test_args = ["devtrack", "add", "Finish", "docs", "--tag", "writing"]
     with mock.patch.object(sys, "argv", test_args):
         cli.main()
-    mock_add_task.assert_called_once_with("Finish docs")
+    # Now add_task takes tag as second argument
+    mock_add_task.assert_called_once_with("Finish docs", "writing")
 
 
 @mock.patch("builtins.print")
@@ -52,7 +54,9 @@ def test_add_missing_description(mock_print):
     test_args = ["devtrack", "add"]
     with mock.patch.object(sys, "argv", test_args):
         cli.main()
-    mock_print.assert_any_call("[!] Usage: devtrack add <task description>")
+    mock_print.assert_any_call(
+        "[!] Usage: devtrack add <task description> [--tag <tag>]"
+    )
 
 
 @mock.patch("devtrack.cli.remove_task")

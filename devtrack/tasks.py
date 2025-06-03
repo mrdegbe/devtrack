@@ -1,5 +1,3 @@
-# devtrack/tasks.py
-
 import json
 from pathlib import Path
 
@@ -22,13 +20,20 @@ def save_tasks(tasks):
         json.dump(tasks, f, indent=2)
 
 
-def add_task(description):
+def add_task(description, tag=None):
     tasks = load_tasks()
     task_id = 1 if not tasks else tasks[-1]["id"] + 1
     completed = False
-    tasks.append({"id": task_id, "description": description, "completed": completed})
+
+    task = {"id": task_id, "description": description, "completed": completed}
+    if tag:
+        task["tag"] = tag
+
+    tasks.append(task)
     save_tasks(tasks)
-    print(f"✅ Task added (ID {task_id}): {description}")
+
+    tag_msg = f" [tag: {tag}]" if tag else ""
+    print(f"✅ Task added (ID {task_id}): {description}{tag_msg}")
 
 
 def list_tasks():
@@ -36,9 +41,11 @@ def list_tasks():
     if not tasks:
         print("📭 No tasks found.")
         return
-    print("📋 Tasks:")
+
     for task in tasks:
-        print(f"  [{task['id']}] {task['description']}")
+        tag = task.get("tag")
+        tag_msg = f" (tag: {tag})" if tag else ""
+        print(f"[{task['id']}] {task['description']}{tag_msg}")
 
 
 def remove_task(task_id):
@@ -79,8 +86,12 @@ def summary_tasks():
 
     print("✅  Completed Tasks:")
     for task in completed:
-        print(f"  [{task['id']}] {task['description']}")
+        tag = task.get("tag")
+        tag_msg = f" (tag: {tag})" if tag else ""
+        print(f"  [{task['id']}] {task['description']}{tag_msg}")
 
     print("\n🕐 Pending Tasks:")
     for task in pending:
-        print(f"  [{task['id']}] {task['description']}")
+        tag = task.get("tag")
+        tag_msg = f" (tag: {tag})" if tag else ""
+        print(f"  [{task['id']}] {task['description']}{tag_msg}")

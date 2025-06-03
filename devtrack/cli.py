@@ -52,10 +52,39 @@ def main():
 
     elif command == "add":
         if len(sys.argv) < 3:
-            print("[!] Usage: devtrack add <task description>")
+            print("[!] Usage: devtrack add <task description> [--tag <tag>]")
             return
-        description = " ".join(sys.argv[2:])
-        add_task(description)
+
+        # Simple parsing: look for --tag or -t flags
+        args = sys.argv[2:]
+        tag = None
+        if "--tag" in args:
+            tag_index = args.index("--tag")
+            if tag_index + 1 < len(args):
+                tag = args[tag_index + 1]
+                # Remove tag flag and value from args
+                args = args[:tag_index] + args[tag_index + 2 :]
+            else:
+                print("[!] Please provide a tag after --tag")
+                return
+        elif "-t" in args:
+            tag_index = args.index("-t")
+            if tag_index + 1 < len(args):
+                tag = args[tag_index + 1]
+                args = args[:tag_index] + args[tag_index + 2 :]
+            else:
+                print("[!] Please provide a tag after -t")
+                return
+
+        description = " ".join(args)
+        add_task(description, tag)
+
+    # elif command == "add":
+    #     if len(sys.argv) < 3:
+    #         print("[!] Usage: devtrack add <task description>")
+    #         return
+    #     description = " ".join(sys.argv[2:])
+    #     add_task(description)
 
     elif command == "remove":
         if len(sys.argv) < 3:
