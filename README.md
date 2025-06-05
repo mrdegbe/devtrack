@@ -24,8 +24,6 @@
 
 🛠️ DevTrack is a lightweight developer productivity CLI tool for tracking tasks and generating meaningful Git commit messages (AI-powered) without leaving the terminal. It works both online (via OpenRouter) and offline (via Ollama).
 
----
-
 ## ✨ Why DevTrack?
 
 Modern developers juggle dozens of tasks daily — but Git alone doesn’t track the **why** behind each change.
