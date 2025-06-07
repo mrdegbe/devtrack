@@ -20,11 +20,11 @@
 
 ---
 
-# 🚀 DevTrack CLI
+# 🚀 `devtrack` CLI
 
-🛠️ DevTrack is a lightweight developer productivity CLI tool for tracking tasks and generating meaningful Git commit messages (AI-powered) without leaving the terminal. It works both online (via OpenRouter) and offline (via Ollama).
+🛠️ `devtrack` is a lightweight developer productivity CLI tool for tracking tasks and generating meaningful Git commit messages (AI-powered) without leaving the terminal. It works both online (via OpenRouter) and offline (via Ollama).
 
-## ✨ Why DevTrack?
+## ✨ Why `devtrack`?
 
 Modern developers juggle dozens of tasks daily — but Git alone doesn’t track the **why** behind each change.
 
@@ -32,7 +32,7 @@ Modern developers juggle dozens of tasks daily — but Git alone doesn’t track
 🔹 Designers use Figma.  
 🔹 Developers use… their memory?
 
-**DevTrack** fills the gap by giving you a developer-first micro-task tracker that lives right in your terminal.
+`devtrack` fills the gap by giving you a developer-first micro-task tracker that lives right in your terminal.
 
 - 🧠 Track your current focus  
 - 📝 Generate structured commit messages  
@@ -63,7 +63,7 @@ pip install devtrack
 
 ## 🧰 Usage
 
-### ✅ Initialize DevTrack in a Project
+### ✅ Initialize `devtrack` in a Project
 
 ```bash
 devtrack init
@@ -111,7 +111,7 @@ Then run:
 devtrack commit <task_id>
 ```
 
-DevTrack uses your configured AI provider to generate a short, clean Git commit message based on the task description and current Git diff.
+`deutrack` uses your configured AI provider to generate a short, clean Git commit message based on the task description and current Git diff.
 
 ---
 
