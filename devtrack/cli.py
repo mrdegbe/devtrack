@@ -6,9 +6,11 @@ from devtrack.tasks import (
     remove_task,
     summary_tasks,
     mark_task_done,
+    load_tasks,
 )
 from devtrack.project import init_project
 from devtrack.status import show_status
+from devtrack.session import set_active_task
 
 
 def print_help():
@@ -79,12 +81,22 @@ def main():
         description = " ".join(args)
         add_task(description, tag)
 
-    # elif command == "add":
-    #     if len(sys.argv) < 3:
-    #         print("[!] Usage: devtrack add <task description>")
-    #         return
-    #     description = " ".join(sys.argv[2:])
-    #     add_task(description)
+    elif command == "focus":
+        if len(sys.argv) < 3:
+            print("[!] Usage: devtrack focus <task_id>")
+            return
+        try:
+            task_id = int(sys.argv[2])
+        except ValueError:
+            print("[!] Task ID must be an integer.")
+            return
+
+        tasks = load_tasks()
+        if any(task["id"] == task_id for task in tasks):
+            set_active_task(task_id)
+            print(f"🎯 Now focusing on task #{task_id}")
+        else:
+            print(f"[!] Task ID #{task_id} not found.")
 
     elif command == "remove":
         if len(sys.argv) < 3:

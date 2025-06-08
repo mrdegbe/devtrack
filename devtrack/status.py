@@ -1,11 +1,12 @@
 import json, os, subprocess
 from devtrack.utils import load_config
+from devtrack.session import get_active_task_id  # NEW: Import to read active task ID
 
 
 def show_status():
     task_file = os.path.expanduser("~/.devtrack.json")
 
-    # Load latest task safely
+    # Load all tasks safely
     if os.path.exists(task_file):
         try:
             with open(task_file, "r") as f:
@@ -13,9 +14,13 @@ def show_status():
         except json.JSONDecodeError:
             print("[!] Your task file is empty or corrupted. Resetting to empty list.")
             tasks = []
-        current_task = tasks[-1] if tasks else None
     else:
-        current_task = None
+        tasks = []
+
+    active_id = get_active_task_id()  # NEW: Get the task ID that's marked as active
+    current_task = next(
+        (t for t in tasks if t["id"] == active_id), None
+    )  # NEW: Lookup active task
 
     # Get staged changes
     try:
@@ -33,13 +38,15 @@ def show_status():
     config = load_config()
     provider = config.get("provider", "None")
     is_online = provider in ["openai", "openrouter"]
-    provider_status = "✅" if is_online else "📴"
+    provider_status = "🎯" if is_online else "📴"
 
     print("\n📊 DevTrack Status\n" + "-" * 25)
     if current_task:
-        print(f"🧠 Current Task: {current_task['description']} (#{current_task['id']})")
+        print(
+            f" Current Task: {current_task['description']} (#{current_task['id']})"
+        )  # MODIFIED: Clarified label
     else:
-        print("🧠 Current Task: None")
+        print("🎯 Current Task: None")  # MODIFIED: Clarified label
 
     print(f"📂 Staged Changes: {staged_files} file(s)")
     print(f"🌐 AI Provider: {provider} {provider_status}\n")
