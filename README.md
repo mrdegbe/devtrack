@@ -20,40 +20,37 @@
 
 ---
 
-# 🚀 `devtrack` CLI
+# 🚀 DevTrack CLI
 
-🛠️ `devtrack` is a lightweight developer productivity CLI tool for tracking tasks and generating meaningful Git commit messages (AI-powered) without leaving the terminal. It works both online (via OpenRouter) and offline (via Ollama).
+🛠️ DevTrack is a lightweight developer productivity CLI tool for tracking microtasks and generating smart Git commit messages using AI. It works both online (OpenRouter/OpenAI) and offline (Ollama).
 
-## ✨ Why `devtrack`?
+## ✨ Why DevTrack?
 
-Modern developers juggle dozens of tasks daily — but Git alone doesn’t track the **why** behind each change.
+Most devs juggle dozens of thoughts and changes. Git doesn’t capture the *why* — DevTrack does.
 
-🔹 Project managers use Jira.  
-🔹 Designers use Figma.  
-🔹 Developers use… their memory?
+🔹 Project managers have Jira.
+🔹 Designers have Figma.
+🔹 Developers? Now we have DevTrack.
 
-`devtrack` fills the gap by giving you a developer-first micro-task tracker that lives right in your terminal.
-
-- 🧠 Track your current focus  
-- 📝 Generate structured commit messages  
-- 🐢 Avoid messy, vague Git history  
-- 💻 Stay in flow — no switching tabs or opening heavy tools  
+* 🧠 Track your focus per task
+* 🧾 Avoid vague Git commit messages
+* 💻 Stay in flow, never leave the terminal
+* 🧠 Smart commit messages powered by AI
 
 ---
 
-## ✨ Features
+## 🔥 Features
 
-- ✅ Add, list, and remove tasks
-- 🧠 Generate smart commit messages based on task description and git diff
-- 🌐 Supports OpenRouter and Ollama for online/offline usage
-- 📁 Stores tasks locally in `.devtrack.json`
-- 🖥️ Runs from the terminal as `devtrack <command>`
+* ✅ Add, list, tag, remove, and complete tasks
+* 🧠 Mark any task as your current focus
+* 💬 Generate smart, AI-assisted Git commit messages
+* 📂 Works with OpenRouter, OpenAI, or Ollama
+* 📁 Stores tasks locally in `.devtrack.json`
+* 🧠 Stores current focus in `.devtrack_active.json`
 
 ---
 
 ## 🚀 Installation
-
-Install globally from PyPI:
 
 ```bash
 pip install devtrack
@@ -63,159 +60,151 @@ pip install devtrack
 
 ## 🧰 Usage
 
-### ✅ Initialize `devtrack` in a Project
+### ✅ Initialize DevTrack
 
 ```bash
 devtrack init
 ```
 
-This sets up `~/.devtrack.json` for task tracking and walks you through configuring an AI provider for commit message generation.
-
-You'll be asked to choose a provider:
-
-* `openai` → Requires your OpenAI API key.
-* `ollama` → Requires a local model name (e.g., `codellama` or `llama3`).
-* `openrouter` → Requires your OpenRouter API key and model name (e.g., `openrouter/openchat`).
-
-Your settings are saved in `~/.devtrackrc`.
+This creates `~/.devtrack.json` for tasks and lets you configure your AI provider in `~/.devtrackrc`.
 
 ---
 
-### ➕ Add a Task
+### ➕ Add a Task (with optional tag)
 
 ```bash
-devtrack add "Refactor user authentication flow"
+devtrack add "Implement login screen" --tag feature
 ```
 
-### 📋 View All Tasks
+---
+
+### 🎯 Set a Task as Your Focus
+
+```bash
+devtrack focus 2
+```
+
+This marks task ID `2` as your current working task.
+
+---
+
+### 📊 View Dev Status
+
+```bash
+devtrack status
+```
+
+
+📋 **Output:**
+
+```
+📊 DevTrack Status
+-------------------------
+🧠 Current Task: Fix login bug (#2)
+📂 Staged Changes: 2 file(s)
+🌐 AI Provider: openai ✅
+```
+
+
+---
+
+### 📋 List Tasks
 
 ```bash
 devtrack tasks
 ```
 
-### ❌ Remove a Task
-
-```bash
-devtrack remove <task_id>
-```
-
-
-
-### 💬 Generate a Commit Message (AI-Powered)
-
-First, stage your changes with `git add`.
-
-Then run:
-
-```bash
-devtrack commit <task_id>
-```
-
-`deutrack` uses your configured AI provider to generate a short, clean Git commit message based on the task description and current Git diff.
+Lists all tasks with IDs, descriptions, and tags.
 
 ---
 
-## 🌐 AI Provider Configuration
+### ✅ Mark Task as Done
 
-To update your AI settings, simply run:
+```bash
+devtrack done 2
+```
+
+---
+
+### ❌ Remove a Task
+
+```bash
+devtrack remove 3
+```
+
+---
+
+### 💬 Generate an AI Commit Message
+
+Stage your changes first:
+
+```bash
+git add .
+devtrack commit 2
+```
+
+Generates a commit message based on the task and your `git diff`.
+
+---
+
+## 🌐 AI Configuration
+
+To reconfigure AI provider:
 
 ```bash
 devtrack init
 ```
 
-Or edit the `~/.devtrackrc` file directly:
+Or edit `~/.devtrackrc`:
 
 ```ini
 provider=openrouter
 openrouter_api_key=your_api_key
 openrouter_model=openrouter/openchat
 ```
+
 ---
 
 ## 🧠 How It Works
 
-* Tasks are stored locally in `~/.devtrack.json`
-* Each task has an ID, description, tag, and completion status
-* Git commits are generated using task data
-* Keeps your Git history meaningful and linked to your actual progress
+* Tasks saved in `~/.devtrack.json`
+* Current focus saved in `~/.devtrack_focus.json`
+* Tasks include: ID, description, tag, completed flag
+* Git commit messages generated from task + diff
 
 ---
+## 🌱 Roadmap
 
-## 📂 Project Structure
-
-```
-devtrack/
-├── devtrack/                  # Main package
-│   ├── __init__.py
-│   ├── cli.py                 # CLI entry point (Typer app)
-│   ├── commits.py             # Commit generation logic
-│   ├── tasks.py               # Task management logic
-│   └── utils.py               # Utility functions (including config & AI query logic)
-│
-├── tests/                     # (optional) Unit tests for the CLI and modules
-├── examples/                  # (optional) Sample commands and use cases
-│
-├── .devtrack.json             # Local task storage (generated at runtime)
-├── .devtrackrc                # Optional runtime config (e.g., selected AI)
-├── .env                       # API keys and environment config
-├── pyproject.toml             # Packaging and dependencies
-├── requirements.txt           # Pip installable requirements
-├── README.md
-├── .gitignore
-
-```
-
----
-
-## 🧰 Requirements
-
-* Python 3.7+
-* Git (for commit generation)
-* Typer CLI: `python -m pip install typer[all]`
-
----
-
-## 🌱 Roadmap & Features
-
-See [devtrack\_roadmap.md](./devtrack_roadmap.md) for upcoming features and development phases.
+See [devtrack\_roadmap.md](./devtrack_roadmap.md)
 
 ---
 
 ## 🧪 Development
 
-For development, make sure you install DevTrack in editable mode:
-
 ```bash
 pip install -e .
 ```
 
-Then run your tool from anywhere using:
+Then run from anywhere:
 
 ```bash
 devtrack <command>
 ```
+
 ---
-## 👨‍💻 Contributing to DevTrack
 
-Thanks for considering contributing! 💡
-
-## How to Contribute
+## 🤝 Contributing
 
 1. Fork the repo
-2. Create a branch (`git checkout -b feature-idea`)
-3. Make your changes
-4. Commit and push
-5. Open a Pull Request 🚀
+2. Create a feature branch
+3. Commit + Push
+4. Open a Pull Request
 
-We welcome bug fixes, feature ideas, and even documentation improvements!
+---
 
-<!-- ✅ NEW SECTION STARTS HERE -->
+## 🧼 Pre-commit
 
-### 🔍 Code Style and Pre-commit Hooks
-
-DevTrack uses [`pre-commit`](https://pre-commit.com/) with [`black`](https://github.com/psf/black) to automatically format Python code before every commit.
-
-To set this up locally (only if you're contributing to DevTrack):
+DevTrack uses `black` for formatting:
 
 ```bash
 pip install pre-commit
@@ -223,33 +212,37 @@ pre-commit install
 ```
 
 ---
+
 ## 🛡 .gitignore
 
-Make sure your `.gitignore` includes:
+Ensure `.gitignore` contains:
 
 ```
 .env
 .devtrack.json
+.devtrack_focus.json
 .devtrackrc
 __pycache__/
 *.pyc
-devtrack.log
 ```
+
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License.
+MIT License
 
 ---
 
-## 🙌 Author
+## 💡 Author
 
-Created by [Raymond Degbe](https://github.com/mrdegbe) 💻
+Created by [Raymond Degbe](https://github.com/mrdegbe)
 
 ---
 
-## 💬 Philosophy
+## 💬 Dev Philosophy
 
-> Great developers don’t just write code — they manage focus.
-> DevTrack helps you turn microtasks into momentum.
+> Great devs don’t just write code — they manage focus.
+> DevTrack turns microtasks into momentum.
+
+---
