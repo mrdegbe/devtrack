@@ -96,7 +96,7 @@ def main():
             set_active_task(task_id)
             print(f"🎯 Now focusing on task #{task_id}")
         else:
-            print(f"[!] Task ID #{task_id} not found.")
+            print(f"[!] No task found with ID {task_id}")
 
     elif command == "remove":
         if len(sys.argv) < 3:

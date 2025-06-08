@@ -1,6 +1,9 @@
-import sys
+import sys, json, os
 from unittest import mock
 from devtrack import cli
+from devtrack.session import get_active_task_id
+
+ACTIVE_FILE = os.path.expanduser("~/.devtrack_active.json")
 
 
 # Mock the actual implementations so we can track if they're called
@@ -113,3 +116,46 @@ def test_unknown_command(mock_print):
     with mock.patch.object(sys, "argv", test_args):
         cli.main()
     mock_print.assert_any_call("[!] Unknown command: launch")
+
+
+@mock.patch("builtins.print")
+@mock.patch("devtrack.tasks.load_tasks")
+def test_focus_valid_task(mock_load_tasks, mock_print):
+    # Set up a task list with ID 1 and 2
+    mock_load_tasks.return_value = [
+        {"id": 1, "description": "Task One", "completed": False},
+        {"id": 2, "description": "Task Two", "completed": False},
+    ]
+    test_args = ["devtrack", "focus", "2"]
+    with mock.patch.object(sys, "argv", test_args):
+        cli.main()
+
+    # Assert file was created with ID 2
+    with open(ACTIVE_FILE) as f:
+        data = json.load(f)
+    assert data["active_task_id"] == 2
+    mock_print.assert_any_call("🎯 Now focusing on task #2")
+
+
+# @mock.patch("builtins.print")
+# @mock.patch("devtrack.tasks.load_tasks")
+# def test_focus_nonexistent_task(mock_load_tasks, mock_print):
+#     mock_load_tasks.return_value = [{"id": 1, "description": "Only Task"}]
+#     test_args = ["devtrack", "focus", "5"]
+#     with mock.patch.object(sys, "argv", test_args):
+#         cli.main()
+#     mock_print.assert_any_call("[!] No task found with ID 5")
+#     assert get_active_task_id() != 5
+
+
+@mock.patch("builtins.print")
+def test_focus_missing_id(mock_print):
+    test_args = ["devtrack", "focus"]
+    with mock.patch.object(sys, "argv", test_args):
+        cli.main()
+    mock_print.assert_any_call("[!] Usage: devtrack focus <task_id>")
+
+
+def teardown_function():
+    if os.path.exists(ACTIVE_FILE):
+        os.remove(ACTIVE_FILE)
