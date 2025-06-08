@@ -137,15 +137,34 @@ def test_focus_valid_task(mock_load_tasks, mock_print):
     mock_print.assert_any_call("🎯 Now focusing on task #2")
 
 
-# @mock.patch("builtins.print")
-# @mock.patch("devtrack.tasks.load_tasks")
-# def test_focus_nonexistent_task(mock_load_tasks, mock_print):
-#     mock_load_tasks.return_value = [{"id": 1, "description": "Only Task"}]
-#     test_args = ["devtrack", "focus", "5"]
-#     with mock.patch.object(sys, "argv", test_args):
-#         cli.main()
-#     mock_print.assert_any_call("[!] No task found with ID 5")
-#     assert get_active_task_id() != 5
+@mock.patch("builtins.print")
+@mock.patch("devtrack.tasks.load_tasks")
+def test_focus_nonexistent_task(mock_load_tasks, mock_print):
+    mock_load_tasks.return_value = [{"id": 1, "description": "Only Task"}]
+    test_args = ["devtrack", "focus", "5"]
+    with mock.patch.object(sys, "argv", test_args):
+        cli.main()
+    mock_print.assert_any_call("[!] No task found with ID 5")
+    assert get_active_task_id() != 5
+
+
+@mock.patch("builtins.print")
+@mock.patch(
+    "devtrack.status.set_active_task"
+)  # or devtrack.tasks.set_active_task depending on location
+@mock.patch("devtrack.tasks.load_tasks")
+def test_focus_valid_task(mock_load_tasks, mock_set_active_task, mock_print):
+    mock_load_tasks.return_value = [
+        {"id": 1, "description": "Task One", "completed": False},
+        {"id": 2, "description": "Task Two", "completed": False},
+    ]
+    test_args = ["devtrack", "focus", "2"]
+    with mock.patch.object(sys, "argv", test_args):
+        cli.main()
+
+    # Ensure set_active_task was called with correct ID
+    mock_set_active_task.assert_called_once_with(2)
+    mock_print.assert_any_call("🎯 Now focusing on task #2")
 
 
 @mock.patch("builtins.print")
