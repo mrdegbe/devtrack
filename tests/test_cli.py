@@ -156,6 +156,6 @@ def test_focus_missing_id(mock_print):
     mock_print.assert_any_call("[!] Usage: devtrack focus <task_id>")
 
 
-def teardown_function():
-    if os.path.exists(ACTIVE_FILE):
-        os.remove(ACTIVE_FILE)
+# def teardown_function():
+#     if os.path.exists(ACTIVE_FILE):
+#         os.remove(ACTIVE_FILE)
