@@ -38,7 +38,7 @@ def show_status():
     config = load_config()
     provider = config.get("provider", "None")
     is_online = provider in ["openai", "openrouter"]
-    provider_status = "🎯" if is_online else "📴"
+    provider_status = "🟢" if is_online else "🔴"
 
     print("\n📊 DevTrack Status\n" + "-" * 25)
     if current_task:
