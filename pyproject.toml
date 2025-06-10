@@ -28,6 +28,7 @@ classifiers = [
 
 [project.scripts]
 devtrack = "devtrack.cli:main"
+dt = "devtrack.cli:main"
 
 [build-system]
 requires = ["setuptools", "wheel"]
