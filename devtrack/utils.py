@@ -1,6 +1,4 @@
-# devtrack/utils.py
-
-import os, subprocess, requests, logging
+import os, subprocess, requests, logging, json
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -12,7 +10,9 @@ load_dotenv()
 log_path = os.path.join(os.path.expanduser("~"), "devtrack.log")
 logging.basicConfig(filename=log_path, level=logging.ERROR)
 
+ACTIVE_FILE = os.path.expanduser("~/.devtrack_active.json")
 CONFIG_PATH = Path.home() / ".devtrackrc"
+TASKS_FILE = Path.home() / ".devtrack.json"
 
 
 def sanitize_output(text: str) -> str:
@@ -129,3 +129,37 @@ def query_openrouter(prompt: str, api_key: str, model: str) -> str:
     except Exception as e:
         logging.error(f"OpenRouter Error: {e}")
         raise RuntimeError(f"OpenRouter Error: {e}")
+
+
+def load_tasks():
+    if not TASKS_FILE.exists():
+        return []
+    try:
+        with open(TASKS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        print("[!] Warning: Task file is corrupted. Starting fresh.")
+        return []
+
+
+def save_tasks(tasks):
+    with open(TASKS_FILE, "w", encoding="utf-8") as f:
+        json.dump(tasks, f, indent=2)
+
+
+def set_active_task(task_id):
+    """NEW: Save the currently active task ID to session state."""
+    with open(ACTIVE_FILE, "w") as f:
+        json.dump({"active_task_id": task_id}, f)
+
+
+def get_active_task_id():
+    """NEW: Retrieve the active task ID from session state."""
+    if not os.path.exists(ACTIVE_FILE):
+        return None
+    with open(ACTIVE_FILE, "r") as f:
+        try:
+            data = json.load(f)
+            return data.get("active_task_id")
+        except json.JSONDecodeError:
+            return None

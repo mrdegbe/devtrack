@@ -1,12 +1,13 @@
-import os, json
-from pathlib import Path
+import json, os
+from devtrack.utils import TASKS_FILE, CONFIG_PATH
 
-CONFIG_FILE = Path.home() / ".devtrack.json"
-CONFIG_RC = Path.home() / ".devtrackrc"
+
+def run(args=None):
+    init_project()
 
 
 def init_project():
-    if os.path.exists(CONFIG_FILE):
+    if os.path.exists(TASKS_FILE):
         print("✅  DevTrack is already initialized in this project.")
         return
 
@@ -14,7 +15,7 @@ def init_project():
         default_data = {"tasks": []}
 
         try:
-            with open(CONFIG_FILE, "w") as f:
+            with open(TASKS_FILE, "w") as f:
                 json.dump(default_data, f, indent=2)
 
             print("📁 Created `.devtrack.json` to track your tasks.")
@@ -50,10 +51,10 @@ def init_project():
         return
 
     try:
-        with open(CONFIG_RC, "w") as f:
+        with open(CONFIG_PATH, "w") as f:
             for key, value in config.items():
                 f.write(f"{key}={value}\n")
 
-        print(f"\n✅  Configuration saved to {CONFIG_RC}")
+        print(f"\n✅  Configuration saved to {CONFIG_PATH}")
     except Exception as e:
         print(f"[!] Failed to write configuration: {e}")

@@ -1,15 +1,17 @@
 import json, os, subprocess
-from devtrack.utils import load_config
-from devtrack.session import get_active_task_id  # NEW: Import to read active task ID
+from devtrack.utils import load_config, get_active_task_id, TASKS_FILE
+
+
+def run(args=None):
+    show_status()
 
 
 def show_status():
-    task_file = os.path.expanduser("~/.devtrack.json")
 
     # Load all tasks safely
-    if os.path.exists(task_file):
+    if os.path.exists(TASKS_FILE):
         try:
-            with open(task_file, "r") as f:
+            with open(TASKS_FILE, "r") as f:
                 tasks = json.load(f)
         except json.JSONDecodeError:
             print("[!] Your task file is empty or corrupted. Resetting to empty list.")

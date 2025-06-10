@@ -1,6 +1,5 @@
-# devtrack/commits.py
-
-import subprocess, re
+import subprocess
+from devtrack.utils import load_tasks
 from devtrack.utils import (
     sanitize_output,
     get_git_diff,
@@ -9,7 +8,17 @@ from devtrack.utils import (
     load_config,
     query_openrouter,
 )
-from devtrack.tasks import load_tasks
+
+
+def run(args):
+    if not args:
+        print("[!] Usage: devtrack commit <task_id>")
+        return
+    try:
+        task_id = int(args[0])
+        generate_commit(task_id)
+    except ValueError:
+        print("[!] Task ID must be an integer.")
 
 
 def generate_commit(task_id: int):
