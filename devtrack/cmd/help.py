@@ -3,7 +3,7 @@ def run(args=None):
         """
 Usage: devtrack <command> [options]
 
-Available commands:
+Available cmd:
   init                 Configure DevTrack and set up your AI provider (runs once).
   summary              List all tasks under Completed tasks and Pending tasks.
   status               Show current task, staged Git changes, and AI status.

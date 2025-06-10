@@ -1,5 +1,5 @@
 import sys
-from devtrack.commands import (
+from devtrack.cmd import (
     add,
     commit,
     done,
