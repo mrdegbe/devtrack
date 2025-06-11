@@ -10,6 +10,7 @@ from devtrack.cmd import (
     status,
     summary,
     tasks,
+    edit,
 )
 
 COMMANDS = {
@@ -23,6 +24,7 @@ COMMANDS = {
     "status": status.run,
     "summary": summary.run,
     "tasks": tasks.run,
+    "edit": edit.run,
 }
 
 

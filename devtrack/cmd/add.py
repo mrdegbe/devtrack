@@ -1,4 +1,4 @@
-from devtrack.utils import load_tasks, save_tasks
+from devtrack.utils import load_tasks, save_tasks, extract_tag
 
 
 def run(args):
@@ -6,23 +6,9 @@ def run(args):
         print("[!] Usage: devtrack add <task description> [--tag <tag>]")
         return
 
-    tag = None
-    if "--tag" in args:
-        i = args.index("--tag")
-        if i + 1 < len(args):
-            tag = args[i + 1]
-            args = args[:i] + args[i + 2 :]
-        else:
-            print("[!] Please provide a tag after --tag")
-            return
-    elif "-t" in args:
-        i = args.index("-t")
-        if i + 1 < len(args):
-            tag = args[i + 1]
-            args = args[:i] + args[i + 2 :]
-        else:
-            print("[!] Please provide a tag after -t")
-            return
+    tag, args = extract_tag(args)
+    if tag is None and ("--tag" in args or "-t" in args):
+        return  # Tag was expected but not provided
 
     description = " ".join(args)
     add_task(description, tag)

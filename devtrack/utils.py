@@ -163,3 +163,18 @@ def get_active_task_id():
             return data.get("active_task_id")
         except json.JSONDecodeError:
             return None
+
+
+def extract_tag(args):
+    tag = None
+    for flag in ("--tag", "-t"):
+        if flag in args:
+            index = args.index(flag)
+            if index + 1 < len(args):
+                tag = args[index + 1]
+                args = args[:index] + args[index + 2 :]
+            else:
+                print(f"[!] Please provide a tag after {flag}")
+                return None, args
+            break
+    return tag, args
