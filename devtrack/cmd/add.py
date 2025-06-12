@@ -10,7 +10,7 @@ def run(args):
     if tag is None and ("--tag" in args or "-t" in args):
         return  # Tag was expected but not provided
 
-    description = " ".join(args)
+    description = args[0]
     add_task(description, tag)
 
 
